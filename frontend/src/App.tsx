@@ -8,7 +8,9 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Agilite Support</h1>
+        <NavLink to="/" className="app-logo-link">
+          <h1>Agilite Support</h1>
+        </NavLink>
         <nav className="app-nav">
           <NavLink to="/tickets/new" className="nav-link">
             Create Ticket
