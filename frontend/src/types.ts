@@ -23,5 +23,6 @@ export interface Ticket extends TicketCreatePayload {
   id: number
   status: TicketStatus
   createdAt: string
+  productName?: string
 }
 

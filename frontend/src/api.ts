@@ -25,6 +25,11 @@ export async function fetchProducts(): Promise<Product[]> {
   return handleResponse<Product[]>(res)
 }
 
+export async function fetchTickets(): Promise<Ticket[]> {
+  const res = await fetch(TICKETS_API_URL)
+  return handleResponse<Ticket[]>(res)
+}
+
 export async function createTicket(payload: TicketCreatePayload): Promise<Ticket> {
   const res = await fetch(TICKETS_API_URL, {
     method: 'POST',
