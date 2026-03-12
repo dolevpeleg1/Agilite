@@ -166,9 +166,32 @@ function CreateTicketPage() {
               <div className="product-summary">
                 {selectedProduct ? (
                   <>
-                    <div className="product-summary-title">{selectedProduct.title}</div>
-                    <div className="product-summary-muted">
-                      #{selectedProduct.id} · ${selectedProduct.price.toFixed(2)}
+                    {(() => {
+                      const rawImage = selectedProduct.images?.[0] ?? ''
+                      const usePlaceholder = rawImage.includes('placehold.co')
+                      const imageSrc = usePlaceholder
+                        ? 'https://placehold.co/120x120?text=Image%0ANot%0AAvailable&size=22'
+                        : rawImage
+                      return imageSrc ? (
+                        <img
+                          src={imageSrc}
+                          alt={selectedProduct.title}
+                          className="product-card-image"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null
+                            e.currentTarget.src =
+                              'https://placehold.co/120x120?text=Image%0ANot%0AAvailable&size=22'
+                          }}
+                        />
+                      ) : (
+                        <div className="product-card-image" aria-hidden="true" />
+                      )
+                    })()}
+                    <div className="product-card-content">
+                      <div className="product-summary-title">{selectedProduct.title}</div>
+                      <div className="product-summary-muted">
+                        #{selectedProduct.id} · ${selectedProduct.price.toFixed(2)}
+                      </div>
                     </div>
                   </>
                 ) : (

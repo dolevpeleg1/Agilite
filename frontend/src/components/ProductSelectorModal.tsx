@@ -12,6 +12,7 @@ export function ProductSelectorModal({ isOpen, onClose, onSelect }: ProductSelec
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     if (!isOpen) return
@@ -60,6 +61,12 @@ export function ProductSelectorModal({ isOpen, onClose, onSelect }: ProductSelec
 
   if (!isOpen) return null
 
+  const normalizedQuery = searchQuery.trim().toLowerCase()
+  const filteredProducts =
+    !normalizedQuery
+      ? products
+      : products.filter((product) => product.title.toLowerCase().includes(normalizedQuery))
+
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div
@@ -80,12 +87,42 @@ export function ProductSelectorModal({ isOpen, onClose, onSelect }: ProductSelec
         </header>
 
         <div className="modal-body">
+          <div
+            className="field-group"
+            style={{
+              flexShrink: 0,
+              maxWidth: '420px',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: '0.5rem',
+            }}
+          >
+            <label
+              className="field-label"
+              htmlFor="product-search"
+              style={{ marginBottom: 0, whiteSpace: 'nowrap' }}
+            >
+              Search products
+            </label>
+            <input
+              id="product-search"
+              className="field-input"
+              type="search"
+              placeholder="Filter by name…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              autoComplete="off"
+              style={{ flex: 1, minWidth: 0 }}
+            />
+          </div>
+
           {loading && <p>Loading products…</p>}
           {error && <p className="form-status-error">{error}</p>}
 
           {!loading && !error && (
             <ul className="product-list">
-              {products.map((product) => {
+              {filteredProducts.map((product) => {
                 const rawImage = product.images?.[0] ?? ''
                 const shouldForcePlaceholder = rawImage.includes('placehold.co')
                 const imageSrc = shouldForcePlaceholder
