@@ -19,10 +19,21 @@ export interface TicketCreatePayload {
   productId: number
 }
 
+export interface Reply {
+  id: number
+  ticketId: number
+  content: string
+  createdAt: string
+}
+
 export interface Ticket extends TicketCreatePayload {
   id: number
   status: TicketStatus
   createdAt: string
   productName?: string
+}
+
+export interface TicketWithReplies extends Ticket {
+  replies: Reply[]
 }
 
