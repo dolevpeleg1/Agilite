@@ -20,7 +20,7 @@ export interface TicketCreatePayload {
 }
 
 export interface Ticket extends TicketCreatePayload {
-  id: string
+  id: number
   status: TicketStatus
   createdAt: string
 }
