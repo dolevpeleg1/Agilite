@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Product, TicketCreatePayload } from '../types'
 import { createTicket } from '../api'
 import { ProductSelectorModal } from '../components/ProductSelectorModal'
@@ -23,6 +23,15 @@ function CreateTicketPage() {
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isProductModalOpen, setIsProductModalOpen] = useState(false)
+
+  useEffect(() => {
+    if (!submitSuccess) return
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setSubmitSuccess(null)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [submitSuccess])
 
   function validate() {
     const nextErrors: Errors = {}
@@ -74,7 +83,7 @@ function CreateTicketPage() {
     try {
       setIsSubmitting(true)
       await createTicket(payload)
-      setSubmitSuccess('Your ticket has been submitted successfully.')
+      setSubmitSuccess('Ticket has been submitted.\nWe will get back to you soon.')
       setEmail('')
       setName('')
       setSubject('')
@@ -253,12 +262,9 @@ function CreateTicketPage() {
             </div>
           </div>
 
-          {(submitSuccess || submitError) && (
+          {submitError && (
             <div className="form-status">
-              {submitSuccess ? (
-                <span className="form-status-success">{submitSuccess}</span>
-              ) : null}
-              {submitError ? <span className="form-status-error">{submitError}</span> : null}
+              <span className="form-status-error">{submitError}</span>
             </div>
           )}
         </form>
@@ -268,6 +274,28 @@ function CreateTicketPage() {
         onClose={() => setIsProductModalOpen(false)}
         onSelect={(product) => setSelectedProduct(product)}
       />
+      {submitSuccess && (
+        <div className="modal-backdrop" onClick={() => setSubmitSuccess(null)}>
+          <div
+            className="modal success-popup"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="success-popup-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p id="success-popup-title" className="success-popup-message">
+              {submitSuccess}
+            </p>
+            <button
+              type="button"
+              className="button"
+              onClick={() => setSubmitSuccess(null)}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

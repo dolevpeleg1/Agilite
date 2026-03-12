@@ -308,6 +308,22 @@ body {
   min-height: 0;
 }
 
+/* Success popup - compact centered alert */
+.modal.success-popup {
+  width: min(400px, 90vw);
+  padding: 1.75rem 1.9rem;
+  text-align: center;
+  gap: 1.25rem;
+}
+
+.success-popup-message {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
 .product-list {
   list-style: none;
   padding: 0;

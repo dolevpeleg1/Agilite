@@ -5,8 +5,22 @@ Support tickets app with a React + Vite frontend and Node.js + Express API backe
 ## Prerequisites
 
 - **Node.js** 18+
-- **PostgreSQL** (running locally)
-- Database `agilite` created (`createdb agilite` or `CREATE DATABASE agilite;` in psql)
+- **PostgreSQL** — either [Neon](https://neon.tech) (recommended) or local
+
+## Database: Neon
+
+This project uses [Neon](https://neon.tech) for serverless PostgreSQL.
+
+1. Create a free account at [console.neon.tech](https://console.neon.tech)
+2. Create a project (e.g. Postgres 16 or 17)
+3. Copy the connection string from **Connection details**
+4. Create `backend/.env`:
+   ```
+   DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
+   ```
+5. The backend creates the `tickets` table on first run
+
+To view your data in Neon: open the project → **SQL Editor** → run `SELECT * FROM tickets;`
 
 ## Quick Start
 
@@ -30,11 +44,11 @@ cd backend
 npm install
 ```
 
-Configure via environment variables or a `.env` file:
+Copy `backend/.env.example` to `backend/.env` and set `DATABASE_URL` (from Neon or your PostgreSQL provider).
 
 | Variable      | Default   | Description                    |
 |---------------|-----------|--------------------------------|
-| `DATABASE_URL`| —         | Full PostgreSQL connection string |
+| `DATABASE_URL`| —         | Full PostgreSQL connection string (e.g. Neon) |
 | `PG_HOST`     | localhost | PostgreSQL host                |
 | `PG_PORT`     | 5432      | PostgreSQL port                |
 | `PG_USER`     | postgres  | PostgreSQL user                |
