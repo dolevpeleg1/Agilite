@@ -30,7 +30,6 @@ body {
 /* Top bar similar vibe to agilite.co.il */
 
 .app-header {
-  backdrop-filter: blur(12px);
   background: #000000;
   border-bottom: 1px solid rgba(55, 65, 81, 0.7);
   padding: 0.9rem 2.5rem;
@@ -383,6 +382,86 @@ body {
 
 .product-card-meta {
   font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Products catalog grid – larger cards */
+.products-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.product-catalog-card {
+  border-radius: 1rem;
+  border: 1px solid rgba(209, 213, 219, 0.9);
+  background: var(--bg-elevated-soft);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  contain: layout paint;
+  transition:
+    border-color 140ms ease-out,
+    box-shadow 140ms ease-out,
+    transform 80ms ease-out;
+}
+
+.product-catalog-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+}
+
+.product-catalog-image-wrap {
+  width: 100%;
+  aspect-ratio: 4/3;
+  min-height: 120px;
+  background: #e5e7eb;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.product-catalog-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-catalog-body {
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.product-catalog-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-catalog-meta {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.products-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.products-pagination-info {
+  font-size: 0.9rem;
   color: var(--text-secondary);
 }
 
@@ -826,5 +905,9 @@ section p {
 
   .tickets-cell-subject {
     white-space: normal;
+  }
+
+  .products-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
