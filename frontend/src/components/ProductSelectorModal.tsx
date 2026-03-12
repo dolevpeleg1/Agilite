@@ -9,10 +9,13 @@ interface ProductSelectorModalProps {
 }
 
 export function ProductSelectorModal({ isOpen, onClose, onSelect }: ProductSelectorModalProps) {
+  const PRODUCTS_PER_PAGE = 20
+
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
     if (!isOpen) return
@@ -47,6 +50,10 @@ export function ProductSelectorModal({ isOpen, onClose, onSelect }: ProductSelec
   }, [isOpen])
 
   useEffect(() => {
+    setPage(1)
+  }, [searchQuery])
+
+  useEffect(() => {
     if (!isOpen) return
 
     function handleKeyDown(event: KeyboardEvent) {
@@ -66,6 +73,11 @@ export function ProductSelectorModal({ isOpen, onClose, onSelect }: ProductSelec
     !normalizedQuery
       ? products
       : products.filter((product) => product.title.toLowerCase().includes(normalizedQuery))
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE))
+  const currentPage = Math.min(page, totalPages)
+  const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE)
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -121,8 +133,9 @@ export function ProductSelectorModal({ isOpen, onClose, onSelect }: ProductSelec
           {error && <p className="form-status-error">{error}</p>}
 
           {!loading && !error && (
-            <ul className="product-list">
-              {filteredProducts.map((product) => {
+            <>
+              <ul className="product-list">
+                {paginatedProducts.map((product) => {
                 const rawImage = product.images?.[0] ?? ''
                 const shouldForcePlaceholder = rawImage.includes('placehold.co')
                 const imageSrc = shouldForcePlaceholder
@@ -162,9 +175,43 @@ export function ProductSelectorModal({ isOpen, onClose, onSelect }: ProductSelec
                       </div>
                     </button>
                   </li>
-                )
-              })}
-            </ul>
+                  )
+                })}
+              </ul>
+              {totalPages > 1 && (
+                <div
+                  className="pagination"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: '1rem',
+                    flexWrap: 'wrap',
+                    gap: '0.5rem',
+                  }}
+                >
+                  <button
+                    type="button"
+                    className="button-ghost"
+                    disabled={currentPage <= 1}
+                    onClick={() => setPage((p) => p - 1)}
+                  >
+                    Previous
+                  </button>
+                  <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    type="button"
+                    className="button-ghost"
+                    disabled={currentPage >= totalPages}
+                    onClick={() => setPage((p) => p + 1)}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
