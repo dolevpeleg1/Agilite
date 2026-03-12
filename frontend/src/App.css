@@ -346,15 +346,13 @@ body {
   transition:
     border-color 140ms ease-out,
     box-shadow 140ms ease-out,
-    background-color 140ms ease-out,
-    transform 80ms ease-out;
+    background-color 140ms ease-out;
 }
 
 .product-card-button:hover {
   border-color: var(--accent);
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.28);
   background: #ffffff;
-  transform: translateY(-1px);
 }
 
 .product-card-image {
@@ -402,11 +400,9 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  contain: layout paint;
   transition:
     border-color 140ms ease-out,
-    box-shadow 140ms ease-out,
-    transform 80ms ease-out;
+    box-shadow 140ms ease-out;
 }
 
 .product-catalog-card:hover {
