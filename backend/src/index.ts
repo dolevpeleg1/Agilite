@@ -1,14 +1,35 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import pg from 'pg'
+import { z } from 'zod'
 
-interface TicketCreateBody {
-  email?: string
-  name?: string
-  subject?: string
-  message?: string
-  productId?: number
-}
+const ticketCreateSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .max(255, 'Email is too long')
+    .email('Invalid email address'),
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .max(255, 'Name is too long')
+    .transform((s) => s.trim()),
+  subject: z
+    .string()
+    .min(1, 'Subject is required')
+    .max(500, 'Subject is too long')
+    .transform((s) => s.trim()),
+  message: z
+    .string()
+    .min(1, 'Message is required')
+    .max(10000, 'Message is too long')
+    .transform((s) => s.trim()),
+  productId: z
+    .coerce
+    .number('Product ID must be a number')
+    .int('Product ID must be an integer')
+    .positive('Product ID must be a positive number'),
+})
 
 interface TicketRow {
   id: number
@@ -85,17 +106,23 @@ function toTicket(row: TicketRow): Ticket {
 }
 
 // POST /api/tickets - create ticket
-app.post('/api/tickets', async (req: Request<object, object, TicketCreateBody>, res: Response): Promise<void> => {
+app.post('/api/tickets', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, name, subject, message, productId } = req.body
+    const result = ticketCreateSchema.safeParse(req.body)
 
-    if (!email || !name || !subject || !message || productId == null) {
+    if (!result.success) {
+      const errors = result.error.flatten().fieldErrors
+      const messages = Object.entries(errors)
+        .map(([field, msgs]) => (msgs ? `${field}: ${msgs.join(', ')}` : ''))
+        .filter(Boolean)
       res.status(400).json({
-        message: 'Missing required fields: email, name, subject, message, productId',
+        message: 'Validation failed',
+        errors: messages.length > 0 ? messages : result.error.message,
       })
       return
     }
 
+    const { email, name, subject, message, productId } = result.data
     const status = 'open'
     const createdAt = new Date().toISOString()
 

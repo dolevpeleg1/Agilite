@@ -1,7 +1,34 @@
 import express from 'express';
 import cors from 'cors';
 import pg from 'pg';
-import { randomBytes } from 'crypto';
+import { z } from 'zod';
+const ticketCreateSchema = z.object({
+    email: z
+        .string()
+        .min(1, 'Email is required')
+        .max(255, 'Email is too long')
+        .email('Invalid email address'),
+    name: z
+        .string()
+        .min(1, 'Name is required')
+        .max(255, 'Name is too long')
+        .transform((s) => s.trim()),
+    subject: z
+        .string()
+        .min(1, 'Subject is required')
+        .max(500, 'Subject is too long')
+        .transform((s) => s.trim()),
+    message: z
+        .string()
+        .min(1, 'Message is required')
+        .max(10000, 'Message is too long')
+        .transform((s) => s.trim()),
+    productId: z
+        .coerce
+        .number('Product ID must be a number')
+        .int('Product ID must be an integer')
+        .positive('Product ID must be a positive number'),
+});
 const app = express();
 const PORT = process.env.PORT ?? 3001;
 app.use(cors());
@@ -23,7 +50,7 @@ async function initDb() {
     try {
         await client.query(`
       CREATE TABLE IF NOT EXISTS tickets (
-        id TEXT PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         email TEXT NOT NULL,
         name TEXT NOT NULL,
         subject TEXT NOT NULL,
@@ -37,9 +64,6 @@ async function initDb() {
     finally {
         client.release();
     }
-}
-function generateTicketId() {
-    return `TKT-${randomBytes(4).toString('hex').toUpperCase()}`;
 }
 function toTicket(row) {
     return {
@@ -56,19 +80,24 @@ function toTicket(row) {
 // POST /api/tickets - create ticket
 app.post('/api/tickets', async (req, res) => {
     try {
-        const { email, name, subject, message, productId } = req.body;
-        if (!email || !name || !subject || !message || productId == null) {
+        const result = ticketCreateSchema.safeParse(req.body);
+        if (!result.success) {
+            const errors = result.error.flatten().fieldErrors;
+            const messages = Object.entries(errors)
+                .map(([field, msgs]) => (msgs ? `${field}: ${msgs.join(', ')}` : ''))
+                .filter(Boolean);
             res.status(400).json({
-                message: 'Missing required fields: email, name, subject, message, productId',
+                message: 'Validation failed',
+                errors: messages.length > 0 ? messages : result.error.message,
             });
             return;
         }
-        const id = generateTicketId();
+        const { email, name, subject, message, productId } = result.data;
         const status = 'open';
         const createdAt = new Date().toISOString();
-        await pool.query(`INSERT INTO tickets (id, email, name, subject, message, "productId", status, "createdAt")
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`, [id, email, name, subject, message, productId, status, createdAt]);
-        const { rows } = await pool.query('SELECT * FROM tickets WHERE id = $1', [id]);
+        const { rows } = await pool.query(`INSERT INTO tickets (email, name, subject, message, "productId", status, "createdAt")
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       RETURNING *`, [email, name, subject, message, productId, status, createdAt]);
         res.status(201).json(toTicket(rows[0]));
     }
     catch (err) {
