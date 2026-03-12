@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Product, TicketCreatePayload } from '../types'
 import { createTicket } from '../api'
+import { ProductSelectorModal } from '../components/ProductSelectorModal'
 
 interface Errors {
   email?: string
@@ -21,6 +22,7 @@ function CreateTicketPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false)
 
   function validate() {
     const nextErrors: Errors = {}
@@ -154,7 +156,11 @@ function CreateTicketPage() {
             </div>
 
             <div className="product-field-display">
-              <button type="button" className="button-secondary button">
+              <button
+                type="button"
+                className="button-secondary button"
+                onClick={() => setIsProductModalOpen(true)}
+              >
                 Select product
               </button>
               <div className="product-summary">
@@ -234,6 +240,11 @@ function CreateTicketPage() {
           )}
         </form>
       </div>
+      <ProductSelectorModal
+        isOpen={isProductModalOpen}
+        onClose={() => setIsProductModalOpen(false)}
+        onSelect={(product) => setSelectedProduct(product)}
+      />
     </section>
   )
 }
