@@ -71,3 +71,19 @@ npm run dev
 ```
 
 Frontend runs on http://localhost:5173 and proxies API requests to the backend.
+
+---
+
+## Deploy to Vercel (Option B: Full-stack)
+
+This project is set up to deploy **frontend + API** on Vercel using Neon.
+
+1. Push the repo to GitHub and import it in [vercel.com](https://vercel.com)
+2. In **Project Settings → Environment Variables**, add:
+   - `DATABASE_URL` — your Neon connection string
+3. Deploy. Vercel will:
+   - Build the frontend from `frontend/`
+   - Deploy API routes from `api/` as serverless functions
+   - Serve both on the same origin; the frontend calls `/api/tickets` automatically
+
+Tables (`tickets`, `replies`) are created automatically on first API call.
