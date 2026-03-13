@@ -1,8 +1,8 @@
 # Agilite — Customer Support Ticketing System
 
-[![Live Demo](https://img.shields.io/badge/demo-live-green)](https://agilite.vercel.app)
+[![Live Demo](https://img.shields.io/badge/demo-live-green)](https://agilitedp.vercel.app/)
 
-**Live Demo:** [https://agilite.vercel.app](https://agilite.vercel.app)
+**Live Demo:** [https://agilitedp.vercel.app/](https://agilitedp.vercel.app/)
 
 A web application simulating a customer support ticketing system. Each ticket is linked to a product from the [Fake Store API](https://api.escuelajs.co/api/v1/products). Built with React + Vite, Node.js + Express, and PostgreSQL (Neon).
 
@@ -131,7 +131,7 @@ npm run dev
 
 ## Working Demo & Sample Data
 
-- **Live demo:** [https://agilite.vercel.app](https://agilite.vercel.app)  
+- **Live demo:** [https://agilitedp.vercel.app/](https://agilitedp.vercel.app/)  
 - **Sample data:** Tickets and replies are created through the UI:
   - Continue as **Customer** → submit a few tickets from `/tickets/new`
   - Continue as **Admin** → manage and reply to those tickets from `/tickets` and `/tickets/:id`
