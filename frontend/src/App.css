@@ -914,6 +914,17 @@ section p {
     white-space: normal;
   }
 
+  .page-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .page-meta {
+    align-self: flex-start;
+    white-space: normal;
+  }
+
   .products-grid {
     grid-template-columns: minmax(0, 1fr);
   }
