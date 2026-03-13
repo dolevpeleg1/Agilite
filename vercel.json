@@ -2,6 +2,7 @@
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "rewrites": [
+    { "source": "/api/tickets/:id/replies", "destination": "/api/tickets-reply?id=:id" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
