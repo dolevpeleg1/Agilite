@@ -15,7 +15,7 @@ function App() {
           <NavLink to="/tickets/new" className="nav-link">
             Create Ticket
           </NavLink>
-          <NavLink to="/tickets" className="nav-link">
+          <NavLink to="/tickets" className="nav-link" end>
             Tickets
           </NavLink>
           <NavLink to="/products" className="nav-link">
