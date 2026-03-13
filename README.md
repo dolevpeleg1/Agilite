@@ -31,6 +31,8 @@ Entry point where users choose their mode before accessing the app.
 - **Continue as Admin** — Navigates to Tickets Dashboard; view and manage tickets, browse products
 - Routes `/tickets/new` and `/tickets` require the corresponding mode; Products is available to both
 
+> **Note:** There is no real authentication in this demo. The Customer/Admin buttons simply toggle the UI mode for testing purposes and do not represent secure roles.
+
 ### 1. Create Ticket Form (nav link shown in Customer Mode)
 
 Customer-facing form to submit support tickets with product selection.
@@ -127,6 +129,16 @@ npm run dev
 
 ---
 
+## Working Demo & Sample Data
+
+- **Live demo:** [https://agilite.vercel.app](https://agilite.vercel.app)  
+- **Sample data:** Tickets and replies are created through the UI:
+  - Continue as **Customer** → submit a few tickets from `/tickets/new`
+  - Continue as **Admin** → manage and reply to those tickets from `/tickets` and `/tickets/:id`
+- Product data is loaded live from the Fake Store API, so the catalog is always populated.
+
+---
+
 ## Manual Setup
 
 ### Database (Neon)
@@ -203,4 +215,11 @@ Work done or refined by me without AI recommendation, or where I chose a differe
 - **Validation & polish:** Form validation logic, error handling, and edge cases
 - **Testing & deployment:** Running and verifying flows locally and in production
 
-*Update this section with your specific contributions.*
+---
+
+## Disclaimer
+- **No official Agilite assets used**: This project is an independent demo and is not affiliated with or endorsed by Agilite. I did not use any official Agilite design assets. The styling is inspired by the public website only, and the favicon is an AI‑generated placeholder that is loosely inspired by the official logo.
+- **Demo only**: This project is a technical assignment demo, not a production support system.  
+- **No real support**: Tickets created here are not monitored and will not be handled by a real support team.  
+- **External APIs**: Product data comes from a third‑party Fake Store API; availability and content may change over time.  
+- **Use at your own risk**: Do not enter sensitive, private, or production data into this application.
