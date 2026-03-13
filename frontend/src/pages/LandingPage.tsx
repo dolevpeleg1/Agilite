@@ -40,7 +40,7 @@ export function LandingPage() {
           >
             <span className="landing-card-title">Continue as Admin</span>
             <span className="landing-card-desc">
-              View and manage tickets, browse products.
+              View and manage tickets and browse products.
             </span>
           </button>
         </div>
