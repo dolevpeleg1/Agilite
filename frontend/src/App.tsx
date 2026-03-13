@@ -1,10 +1,31 @@
-import { NavLink, Route, Routes } from 'react-router-dom'
+import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
+import { UserModeProvider, useUserMode } from './context/UserModeContext'
 import CreateTicketPage from './pages/CreateTicketPage'
 import TicketsDashboardPage from './pages/TicketsDashboardPage'
 import TicketDetailsPage from './pages/TicketDetailsPage'
 import ProductsPage from './pages/ProductsPage'
+import { LandingPage } from './pages/LandingPage'
 
-function App() {
+function RequireMode({
+  requireAdmin,
+  children,
+}: {
+  requireAdmin?: boolean
+  children: React.ReactNode
+}) {
+  const { userMode } = useUserMode()
+  const loc = useLocation()
+
+  if (userMode === null) return <Navigate to="/" state={{ from: loc }} replace />
+  if (requireAdmin && userMode === 'customer') {
+    return <Navigate to="/" state={{ from: loc }} replace />
+  }
+  return <>{children}</>
+}
+
+function AppContent() {
+  const { userMode } = useUserMode()
+
   return (
     <div className="app">
       <header className="app-header">
@@ -12,28 +33,71 @@ function App() {
           <h1>Agilite Support</h1>
         </NavLink>
         <nav className="app-nav">
-          <NavLink to="/tickets/new" className="nav-link">
-            Create Ticket
-          </NavLink>
-          <NavLink to="/tickets" className="nav-link" end>
-            Tickets
-          </NavLink>
-          <NavLink to="/products" className="nav-link">
-            Products
-          </NavLink>
+          {userMode === 'customer' && (
+            <NavLink to="/tickets/new" className="nav-link">
+              Create Ticket
+            </NavLink>
+          )}
+          {userMode === 'admin' && (
+            <NavLink to="/tickets" className="nav-link" end>
+              Tickets
+            </NavLink>
+          )}
+          {userMode !== null && (
+            <NavLink to="/products" className="nav-link">
+              Products
+            </NavLink>
+          )}
         </nav>
       </header>
 
       <main className="app-main">
         <Routes>
-          <Route path="/tickets/new" element={<CreateTicketPage />} />
-          <Route path="/tickets" element={<TicketsDashboardPage />} />
-          <Route path="/tickets/:id" element={<TicketDetailsPage />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="*" element={<CreateTicketPage />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route
+            path="/tickets/new"
+            element={
+              <RequireMode>
+                <CreateTicketPage />
+              </RequireMode>
+            }
+          />
+          <Route
+            path="/tickets"
+            element={
+              <RequireMode requireAdmin>
+                <TicketsDashboardPage />
+              </RequireMode>
+            }
+          />
+          <Route
+            path="/tickets/:id"
+            element={
+              <RequireMode requireAdmin>
+                <TicketDetailsPage />
+              </RequireMode>
+            }
+          />
+          <Route
+            path="/products"
+            element={
+              <RequireMode>
+                <ProductsPage />
+              </RequireMode>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <UserModeProvider>
+      <AppContent />
+    </UserModeProvider>
   )
 }
 
